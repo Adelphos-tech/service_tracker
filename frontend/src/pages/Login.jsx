@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
-import { Package, Mail, Lock } from 'lucide-react';
+import { Mail, Lock } from 'lucide-react';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -37,13 +37,14 @@ const Login = () => {
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <div className="bg-gradient-to-r from-primary-500 to-secondary-600 p-3 rounded-2xl">
-              <Package className="h-12 w-12 text-white" />
-            </div>
+            <Link to="/" className="hover:opacity-80 transition-opacity">
+              <img 
+                src="/qrtrx-logo.svg" 
+                alt="QRtrX Logo" 
+                className="h-16 w-auto"
+              />
+            </Link>
           </div>
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-            Equipment Tracker
-          </h2>
           <p className="mt-2 text-gray-600">Sign in to manage your equipment</p>
         </div>
 

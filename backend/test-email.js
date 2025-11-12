@@ -1,15 +1,16 @@
 import dotenv from 'dotenv';
-import { sendServiceReminderEmail, sendWelcomeEmail } from './utils/emailService.js';
 
-// Load environment variables
+// Load environment variables FIRST
 dotenv.config();
+
+import { sendServiceReminderEmail, sendWelcomeEmail } from './utils/emailService.js';
 
 console.log('🧪 Testing Email Service...\n');
 
-// Test data
+// Test data - Use the email you signed up with on Resend
 const testUser = {
-  name: 'Shivang Singh',
-  email: 'shivangsingh191@gmail.com'
+  name: 'Test User',
+  email: 'pidacabi@denipl.com' // Change this to your Resend signup email
 };
 
 const testEquipment = {
@@ -35,10 +36,11 @@ async function testEmails() {
   } catch (error) {
     console.error('❌ Email test failed:', error.message);
     console.error('\nPlease check:');
-    console.error('1. EMAIL_USER is set correctly');
-    console.error('2. EMAIL_PASSWORD is your Gmail App Password (not regular password)');
-    console.error('3. 2-Step Verification is enabled on Gmail');
-    console.error('4. All EMAIL_* variables are set in .env file\n');
+    console.error('1. RESEND_API_KEY is set correctly in .env file');
+    console.error('2. API key starts with "re_"');
+    console.error('3. EMAIL_FROM uses onboarding@resend.dev for free tier');
+    console.error('4. You have not exceeded Resend free tier limits (100 emails/day)\n');
+    console.error('\nSee RESEND_SETUP.md for detailed setup instructions');
     process.exit(1);
   }
 }

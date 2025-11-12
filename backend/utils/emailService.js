@@ -1,39 +1,27 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
-// Create reusable transporter
-const createTransporter = () => {
-  return nodemailer.default?.createTransporter ? 
-    nodemailer.default.createTransporter({
-      host: process.env.EMAIL_HOST,
-      port: process.env.EMAIL_PORT,
-      secure: false, // true for 465, false for other ports
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD
-      }
-    }) :
-    nodemailer.createTransporter({
-      host: process.env.EMAIL_HOST,
-      port: process.env.EMAIL_PORT,
-      secure: false, // true for 465, false for other ports
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD
-      }
-    });
+// Initialize Resend with API key (lazy initialization)
+let resend = null;
+
+const getResendClient = () => {
+  if (!resend) {
+    if (!process.env.RESEND_API_KEY) {
+      throw new Error('RESEND_API_KEY is not set in environment variables');
+    }
+    resend = new Resend(process.env.RESEND_API_KEY);
+  }
+  return resend;
 };
 
 export const sendServiceReminderEmail = async (userEmail, equipment) => {
   try {
-    const transporter = createTransporter();
-
     const daysUntilExpiry = Math.ceil(
       (new Date(equipment.serviceExpiryDate) - new Date()) / (1000 * 60 * 60 * 24)
     );
 
-    const mailOptions = {
-      from: process.env.EMAIL_FROM,
-      to: userEmail,
+    const { data, error } = await getResendClient().emails.send({
+      from: process.env.EMAIL_FROM || 'QRtrX Equipment Tracker <onboarding@resend.dev>',
+      to: [userEmail],
       subject: `Service Reminder: ${equipment.title} - Due in ${daysUntilExpiry} days`,
       html: `
         <!DOCTYPE html>
@@ -111,10 +99,14 @@ export const sendServiceReminderEmail = async (userEmail, equipment) => {
         </body>
         </html>
       `
-    };
+    });
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Email sent:', info.messageId);
+    if (error) {
+      console.error('Error sending email:', error);
+      return false;
+    }
+
+    console.log('Email sent:', data.id);
     return true;
   } catch (error) {
     console.error('Error sending email:', error);
@@ -124,12 +116,10 @@ export const sendServiceReminderEmail = async (userEmail, equipment) => {
 
 export const sendWelcomeEmail = async (userEmail, userName) => {
   try {
-    const transporter = createTransporter();
-
-    const mailOptions = {
-      from: process.env.EMAIL_FROM,
-      to: userEmail,
-      subject: 'Welcome to Equipment Tracker',
+    const { data, error } = await getResendClient().emails.send({
+      from: process.env.EMAIL_FROM || 'QRtrX Equipment Tracker <onboarding@resend.dev>',
+      to: [userEmail],
+      subject: 'Welcome to QRtrX Equipment Tracker',
       html: `
         <!DOCTYPE html>
         <html>
@@ -164,9 +154,14 @@ export const sendWelcomeEmail = async (userEmail, userName) => {
         </body>
         </html>
       `
-    };
+    });
 
-    await transporter.sendMail(mailOptions);
+    if (error) {
+      console.error('Error sending welcome email:', error);
+      return false;
+    }
+
+    console.log('Welcome email sent:', data.id);
     return true;
   } catch (error) {
     console.error('Error sending welcome email:', error);
