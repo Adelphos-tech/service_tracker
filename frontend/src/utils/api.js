@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-// Use environment variable for API URL in production, fallback to /api for development
+// Use environment variable for API URL in production, fallback to production backend
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api'
+  baseURL: import.meta.env.VITE_API_URL || 'https://servicetracker-production.up.railway.app/api'
 });
 
 // Add token to requests
