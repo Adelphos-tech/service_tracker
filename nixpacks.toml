@@ -1,0 +1,11 @@
+[phases.setup]
+nixPkgs = ['nodejs_18']
+
+[phases.install]
+cmds = ['echo "Skipping root install"']
+
+[phases.build]
+cmds = ['echo "No root build needed"']
+
+[start]
+cmd = 'echo "Please deploy backend and frontend separately"'
