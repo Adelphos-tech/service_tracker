@@ -39,7 +39,13 @@ app.get('/api/health', (req, res) => {
 // Redirect route for QR codes that point to backend URL
 // This handles old QR codes that were generated with wrong FRONTEND_URL
 app.get('/equipment/scan/:id', (req, res) => {
-  const frontendUrl = process.env.FRONTEND_URL || 'https://your-frontend.netlify.app';
+  let frontendUrl = process.env.FRONTEND_URL || 'https://your-frontend.netlify.app';
+  
+  // Ensure URL has https:// protocol
+  if (!frontendUrl.startsWith('http://') && !frontendUrl.startsWith('https://')) {
+    frontendUrl = `https://${frontendUrl}`;
+  }
+  
   const redirectUrl = `${frontendUrl}/equipment/scan/${req.params.id}`;
   console.log(`Redirecting QR scan from backend to frontend: ${redirectUrl}`);
   res.redirect(301, redirectUrl);
