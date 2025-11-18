@@ -41,6 +41,27 @@ router.get('/', protect, async (req, res) => {
   }
 });
 
+// @route   GET /api/equipment/scan/:id
+// @desc    Get equipment details by scanning QR code (public access)
+// @access  Public
+router.get('/scan/:id', async (req, res) => {
+  try {
+    const equipment = await Equipment.findById(req.params.id).populate('user', 'name email company');
+
+    if (!equipment) {
+      return res.status(404).json({ message: 'Equipment not found' });
+    }
+
+    res.json(equipment);
+  } catch (error) {
+    console.error(error);
+    if (error.kind === 'ObjectId') {
+      return res.status(404).json({ message: 'Equipment not found' });
+    }
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
 // @route   GET /api/equipment/:id
 // @desc    Get single equipment by ID
 // @access  Private
@@ -55,27 +76,6 @@ router.get('/:id', protect, async (req, res) => {
     // Check if user owns this equipment
     if (equipment.user.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: 'Not authorized to access this equipment' });
-    }
-
-    res.json(equipment);
-  } catch (error) {
-    console.error(error);
-    if (error.kind === 'ObjectId') {
-      return res.status(404).json({ message: 'Equipment not found' });
-    }
-    res.status(500).json({ message: 'Server error', error: error.message });
-  }
-});
-
-// @route   GET /api/equipment/scan/:id
-// @desc    Get equipment details by scanning QR code (public access)
-// @access  Public
-router.get('/scan/:id', async (req, res) => {
-  try {
-    const equipment = await Equipment.findById(req.params.id).populate('user', 'name email company');
-
-    if (!equipment) {
-      return res.status(404).json({ message: 'Equipment not found' });
     }
 
     res.json(equipment);
