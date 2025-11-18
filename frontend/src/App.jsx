@@ -10,6 +10,7 @@ import EquipmentList from './pages/EquipmentList';
 import EquipmentForm from './pages/EquipmentForm';
 import EquipmentDetail from './pages/EquipmentDetail';
 import QRScanner from './pages/QRScanner';
+import PublicEquipmentView from './pages/PublicEquipmentView';
 
 function App() {
   return (
@@ -21,6 +22,8 @@ function App() {
             {/* Public Routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            {/* Public QR Code Scan Route - Must be before private /equipment/:id */}
+            <Route path="/equipment/scan/:id" element={<PublicEquipmentView />} />
 
             {/* Private Routes */}
             <Route
