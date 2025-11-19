@@ -11,6 +11,8 @@ import EquipmentForm from './pages/EquipmentForm';
 import EquipmentDetail from './pages/EquipmentDetail';
 import QRScanner from './pages/QRScanner';
 import PublicEquipmentView from './pages/PublicEquipmentView';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
 
 function App() {
   return (
@@ -22,6 +24,9 @@ function App() {
             {/* Public Routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            {/* Admin Routes */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
             {/* Public QR Code Scan Route - Must be before private /equipment/:id */}
             <Route path="/equipment/scan/:id" element={<PublicEquipmentView />} />
 
